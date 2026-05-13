@@ -131,6 +131,7 @@ function SkeletonCard() {
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -178,10 +179,16 @@ export default function Home() {
       }),
   ];
 
-  const filtered =
-    selectedCategory === "전체"
-      ? articles
-      : articles.filter((a) => a.category === selectedCategory);
+  const filtered = articles
+    .filter((a) => selectedCategory === "전체" || a.category === selectedCategory)
+    .filter((a) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.trim().toLowerCase();
+      return (
+        a.title.toLowerCase().includes(q) ||
+        (a.summary ?? "").toLowerCase().includes(q)
+      );
+    });
 
   const lastUpdatedStr = lastUpdated
     ? Math.floor((Date.now() - lastUpdated.getTime()) / 60000) < 1
@@ -278,9 +285,42 @@ export default function Home() {
 
         {/* Main content */}
         <main className="flex-1 p-6">
+          <div className="relative mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              placeholder="공지 제목 또는 내용 검색..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-9 py-2 text-sm bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 text-gray-700 placeholder-gray-400 transition"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            )}
+          </div>
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-gray-700">
               전체 <span className="font-semibold">공지</span> {filtered.length}건
+              {searchQuery && <span className="ml-1 text-gray-400">· &ldquo;{searchQuery}&rdquo; 검색 결과</span>}
             </p>
             <select className="text-sm border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-600 cursor-pointer focus:outline-none">
               <option>최신순</option>
@@ -305,6 +345,19 @@ export default function Home() {
               ? Array.from({ length: 4 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))
+              : filtered.length === 0 && !loading ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mb-3 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <p className="text-sm">검색 결과가 없습니다</p>
+                    {searchQuery && (
+                      <button onClick={() => setSearchQuery("")} className="mt-2 text-xs text-blue-500 hover:underline">
+                        검색어 지우기
+                      </button>
+                    )}
+                  </div>
+                )
               : filtered.map((item, index) => (
                   <div
                     key={item.id}
@@ -324,7 +377,7 @@ export default function Home() {
                           <span
                             className={`shrink-0 text-xs font-medium px-2 py-0.5 rounded ${badgeClass[getBadge(item.category)]}`}
                           >
-                            {item.category}
+                            {CATEGORY_TO_KOREAN[item.category] ?? item.category}
                           </span>
                         </div>
                         {item.summary && (
