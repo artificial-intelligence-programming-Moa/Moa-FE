@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -191,26 +192,32 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-stone-100 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10 relative">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-white"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
-          </div>
+          <Image
+            src="/moalogo.jpg"
+            alt="MOA 로고"
+            width={40}
+            height={40}
+            className="rounded-xl object-contain"
+          />
           <div>
             <h1 className="text-sm font-semibold text-gray-900 leading-tight">
-              경희대학교 공지 모아보기
+              경희대학교 공지 Moa보기
             </h1>
             <p className="text-xs text-gray-400">
               마지막 업데이트 · {lastUpdatedStr}
             </p>
           </div>
+        </div>
+        <div className="absolute left-1/2 -translate-x-1/2">
+          <Image
+            src="/khu_logo.jpg"
+            alt="경희대학교 로고"
+            width={120}
+            height={40}
+            className="object-contain"
+          />
         </div>
         <button
           onClick={fetchArticles}
