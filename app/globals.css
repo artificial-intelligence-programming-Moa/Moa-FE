@@ -5,6 +5,21 @@
   --foreground: #171717;
 }
 
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide-in {
+  animation: fadeSlideIn 0.25s ease both;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
