@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OO대학교 공지 모아보기",
+  title: "경희대학교 공지 Moa보기",
   description: "대학교 공지사항을 한눈에 모아보는 서비스",
 };
 

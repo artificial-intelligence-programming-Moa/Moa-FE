@@ -371,7 +371,7 @@ export default function Home() {
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-3">
-                          <h2 className="text-sm font-semibold text-gray-900 leading-snug">
+                          <h2 className="text-base font-semibold text-gray-900 leading-snug">
                             {item.title}
                           </h2>
                           <span
@@ -381,7 +381,7 @@ export default function Home() {
                           </span>
                         </div>
                         {item.summary && (
-                          <p className="mt-1.5 text-xs text-gray-500 leading-relaxed">
+                          <p className="mt-1.5 text-sm text-gray-500 leading-relaxed">
                             {item.summary}
                           </p>
                         )}
